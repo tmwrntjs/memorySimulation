@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class PageFrame {
 
+	public static int notPageFault=0;
 	public int numFrames;
 	public Page[] pagesInFrame;
 	public int[] accessBit;
@@ -39,6 +40,7 @@ public class PageFrame {
 				if (!Main.quiet) {
 					System.out.println("(not a page fault)");
 				}
+				notPageFault++;
 				return false; // page was found, not a page fault
 			}
 		}
