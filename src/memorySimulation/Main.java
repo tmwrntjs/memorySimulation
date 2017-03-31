@@ -20,11 +20,11 @@ public class Main {
 		
 		quiet=true;
 		ArrayList<Page> pagesArr = new ArrayList<Page>();
-		int numFrames= 1;
+		int numFrames= 16;
 		int algorithm =0;
 		
 		
-		FileReader file	= new FileReader("gccBig.trace");
+		FileReader file	= new FileReader("bzip.trace");
 		Scanner sc = new Scanner(file);
 		try {
 		Page thisPage;
@@ -73,7 +73,6 @@ public class Main {
 		System.out.println("Number of Writes: " +PageTable.numWrites);
 		System.out.println("Number of Reads: " +PageTable.numReads);
 		System.out.println("Number of traces:" +pagesArr.size());
-		System.out.println("Not Page Fault successes: "+PageFrame.notPageFault );
 		
 		
 		

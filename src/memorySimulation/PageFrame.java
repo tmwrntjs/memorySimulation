@@ -4,7 +4,6 @@ import java.util.Random;
 
 public class PageFrame {
 
-	public static int notPageFault=0;
 	public int numFrames;
 	public Page[] pagesInFrame;
 	public int[] accessBit;
@@ -40,7 +39,6 @@ public class PageFrame {
 				if (!Main.quiet) {
 					System.out.println("(not a page fault)");
 				}
-				notPageFault++;
 				return false; // page was found, not a page fault
 			}
 		}
@@ -84,6 +82,7 @@ public class PageFrame {
 	private void useRandom(Page page) {
 		Random rand = new Random(page.time * page.address);
 
+		//TODO: optimization: if the random one is dirty, don't do it and pick a different one
 		int randomNumber = rand.nextInt(numFrames);
 
 		if (pagesInFrame[randomNumber].needsWrite) {
