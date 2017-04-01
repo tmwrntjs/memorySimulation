@@ -16,14 +16,16 @@ import java.util.Scanner;
 public class Main {
 
 	public static boolean quiet;
+	public static ArrayList<Page> pagesArr;
 	public static void main(String[] args) throws FileNotFoundException {
 		
 		quiet=true;
-		ArrayList<Page> pagesArr = new ArrayList<Page>();
 		int numFrames= 16;
-		int algorithm =0;
+		int algorithm =3;
+	
 		
-		
+		 pagesArr =new ArrayList<Page>(); //made public for the ideal algorithm to access
+			
 		FileReader file	= new FileReader("bzip.trace");
 		Scanner sc = new Scanner(file);
 		try {
@@ -31,7 +33,7 @@ public class Main {
 		while(sc.hasNext()){
 			thisPage = new Page();
 			
-			thisPage.address= (int)sc.nextLong(16)  >> 12;
+			thisPage.address= (int)sc.nextLong(16)  >>12;
 			
 			if(sc.next().charAt(0) =='R'){
 				thisPage.needsWrite = false;
@@ -73,9 +75,6 @@ public class Main {
 		System.out.println("Number of Writes: " +PageTable.numWrites);
 		System.out.println("Number of Reads: " +PageTable.numReads);
 		System.out.println("Number of traces:" +pagesArr.size());
-		
-		
-		
 		
 		
 	}//end main

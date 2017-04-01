@@ -8,7 +8,7 @@ package memorySimulation;
  */
 public class PageTable {
 	public Page[] pages = new Page[1048576]; // 2^20
-	public int currentIndex = 0;
+	private int currentIndex = 0;
 	public static int numReads = 0;
 	public static int numWrites = 0;
 
