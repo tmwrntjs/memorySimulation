@@ -5,7 +5,7 @@ package memorySimulation;
 
 public class Page {
 	public int address=-1;
-	public boolean needsWrite = false;
+	public boolean needsWrite;
 	public long time;
 	
 	public Page(int address, boolean needsWrite){

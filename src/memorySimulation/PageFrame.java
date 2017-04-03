@@ -20,7 +20,7 @@ public class PageFrame {
 	private int[] accessBit;
 	private int[] callDistance;
 	private int progressThroughProblem = 0;
-	private int pagesFilled=0;
+	private int pagesFilled = 0;
 
 	/**
 	 * Constructor for Page Frames
@@ -70,7 +70,7 @@ public class PageFrame {
 		if (algorithmType == 3) {
 			progressThroughProblem++;
 		}
-		
+
 		for (int i = 0; i < pagesInFrame.length; i++) { // check all frames for
 														// this page
 			if (pagesInFrame[i].address == page.address) {
@@ -84,11 +84,14 @@ public class PageFrame {
 				}
 				if (algorithmType == 3) {
 					callDistance[i] = findNextOfThisPage(pagesInFrame[i]);
-					if(!Main.quiet){
-						System.out.println("Page updated: new next call distance is " + callDistance[i]);
+					if (!Main.quiet) {
+						System.out
+								.println("Page updated: new next call distance is "
+										+ callDistance[i]);
 					}
-				
+
 				}
+
 				return false; // page was found, not a page fault
 			}
 		}
@@ -133,14 +136,18 @@ public class PageFrame {
 	private void useRandom(Page page) {
 		Random rand = new Random(page.time * page.address);
 
-		// TODO: optimization: if the random one is dirty, don't do it and pick
+		// optimization: if the random one is dirty, don't do it and pick
 		// a different one
+
 		int randomNumber = rand.nextInt(numFrames);
 
+		//if the page needs write, find a different one to write to.
+		//do this just once can save number of writes with little cost for picking a different frame
 		if (pagesInFrame[randomNumber].needsWrite) {
-			PageTable.numWrites++;
+			randomNumber = rand.nextInt(numFrames);
 		}
-
+		
+		
 		if (!Main.quiet) {
 			if (pagesInFrame[randomNumber].address != -1) {// default address is
 															// -1, so if its -1
@@ -151,7 +158,11 @@ public class PageFrame {
 			System.out.println("Adding address " + page.address
 					+ " to the Page Frames at location " + randomNumber);
 		}
-
+		
+		if (pagesInFrame[randomNumber].needsWrite) {
+			PageTable.numWrites++;
+			pagesInFrame[randomNumber].needsWrite =false;
+		}
 		pagesInFrame[randomNumber] = page;
 	}
 
@@ -204,7 +215,9 @@ public class PageFrame {
 
 				if (pagesInFrame[CPIteratorIndex].needsWrite) {
 					PageTable.numWrites++;
+					pagesInFrame[CPIteratorIndex].needsWrite = false;
 				}
+
 				if (!Main.quiet) {
 					System.out.println("Writing the replaced frame to disk");
 				}
@@ -241,8 +254,10 @@ public class PageFrame {
 				oldestPage = i;
 			}
 		}
+
 		if (pagesInFrame[oldestPage].needsWrite) {
 			PageTable.numWrites++;
+			pagesInFrame[oldestPage].needsWrite = false;
 		}
 
 		if (!Main.quiet) {
@@ -264,15 +279,14 @@ public class PageFrame {
 	 */
 	private void useIdeal(Page page) {
 		int indexOfFurthest = 0;
-		
-		
-		if (pagesFilled< numFrames) {
+
+		if (pagesFilled < numFrames) {
 			indexOfFurthest = pagesFilled;
 			if (!Main.quiet) {
 				System.out.println("writing #" + pagesFilled);
 			}
 			pagesFilled++;
-			
+
 		} else {
 			int currentFarthestCallDistance = 0;
 			for (int i = 0; i < numFrames; i++) {
@@ -287,15 +301,16 @@ public class PageFrame {
 						+ indexOfFurthest);
 				System.out.println("REPLACING PAGE:  distance of prev one is "
 						+ callDistance[indexOfFurthest]);
-				System.out.println("Call distance array:" + Arrays.toString(callDistance));
+				System.out.println("Call distance array:"
+						+ Arrays.toString(callDistance));
 
 			}
 
 		}
 
 		// get distance to next one;
-		for (int i = progressThroughProblem; i < Main.pagesArr.size(); i++) {
-			if (Main.pagesArr.get(i).address == page.address) {
+		for (int i = progressThroughProblem; i < Main.pagesArr.length; i++) {
+			if (Main.pagesArr[i].address == page.address) {
 				callDistance[indexOfFurthest] = i;
 				if (!Main.quiet) {
 					System.out.println("Distance of the added page next use:"
@@ -306,31 +321,32 @@ public class PageFrame {
 		}
 
 		if (!Main.quiet) {
-			System.out.println("Progress: "+ progressThroughProblem);
+			System.out.println("Progress: " + progressThroughProblem);
 		}
 
 		if (pagesInFrame[indexOfFurthest].needsWrite) {
 			PageTable.numWrites++;
+			pagesInFrame[indexOfFurthest].needsWrite = false;
 		}
 
 		pagesInFrame[indexOfFurthest] = page;
 
 	}// useIdeal function end
-	
-	
+
 	/**
 	 * helper method to update the next time a page is called
+	 * 
 	 * @param page
 	 * @return index of n
 	 */
-	private int findNextOfThisPage(Page page){
-		
-		for (int i = progressThroughProblem; i < Main.pagesArr.size(); i++) {
-			if (Main.pagesArr.get(i).address == page.address) {
+	private int findNextOfThisPage(Page page) {
+
+		for (int i = progressThroughProblem; i < Main.pagesArr.length; i++) {
+			if (Main.pagesArr[i].address == page.address) {
 				return i;
 			}
 		}
-		return Integer.MAX_VALUE; //page is never called again
+		return Integer.MAX_VALUE; // page is never called again
 	}
 
 }// end Page Frame class
