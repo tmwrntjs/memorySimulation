@@ -51,7 +51,7 @@ public class PageFrame {
 		if (algorithmType == 3) {
 			callDistance = new int[numFrames];
 			for (int i = 0; i < numFrames; i++) {
-				callDistance[i] = 0;
+				callDistance[i] = -1;
 			}
 		}
 
@@ -280,11 +280,20 @@ public class PageFrame {
 	private void useIdeal(Page page) {
 		int indexOfFurthest = 0;
 
+		if(pagesFilled == numFrames){
+			if (!Main.quiet) {
+				System.out.println("REPLACING PAGE: index of page chosen is "
+						+ Arrays.toString(callDistance));
+			}
+		}
+		
 		if (pagesFilled < numFrames) {
 			indexOfFurthest = pagesFilled;
 			if (!Main.quiet) {
 				System.out.println("writing #" + pagesFilled);
 			}
+			
+			
 			pagesFilled++;
 
 		} else {
@@ -299,7 +308,7 @@ public class PageFrame {
 			if (!Main.quiet) {
 				System.out.println("REPLACING PAGE: index of page chosen is "
 						+ indexOfFurthest);
-				System.out.println("REPLACING PAGE:  distance of prev one is "
+				System.out.println("REPLACING PAGE:  Old distance is "
 						+ callDistance[indexOfFurthest]);
 				System.out.println("Call distance array:"
 						+ Arrays.toString(callDistance));
@@ -317,7 +326,9 @@ public class PageFrame {
 							+ callDistance[indexOfFurthest]);
 				}
 				break;
-			}
+			}//end if
+			//if never called again, then set to max so its replaced
+			callDistance[indexOfFurthest]= Integer.MAX_VALUE;
 		}
 
 		if (!Main.quiet) {

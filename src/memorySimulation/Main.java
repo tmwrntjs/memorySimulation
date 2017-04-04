@@ -18,6 +18,8 @@ public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException {
 
+		long startTime = System.nanoTime();    
+		
 		//process command line arguments
 		int numFrames = Integer.parseInt(args[0]);
 		int algorithm =0;
@@ -118,6 +120,12 @@ public class Main {
 		System.out.println("Number of Reads: " + PageTable.numReads);
 		System.out.println("Number of traces:" + pagesArr.length);
 
+
+		long estimatedTime = System.nanoTime() - startTime;
+		System.out.println(estimatedTime/1000000 + " milliseconds");
+		
+		
+		
 	}// end main
 
 }// end class
